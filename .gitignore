@@ -13,3 +13,5 @@ ok
 
 .idea
 __pycache__
+
+.gitignore
