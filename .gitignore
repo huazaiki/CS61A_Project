@@ -12,3 +12,4 @@ ok
 */*/tests/
 
 .idea
+__pycache__
