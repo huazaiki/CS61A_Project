@@ -8,6 +8,7 @@
 
 ```text
 ├─archive
+├─code
 ├─hw
 ├─lab
 ├─disc
@@ -15,6 +16,7 @@
 ```
 
 - archive: 用于文件存档
+- code: 存放Lecture上的代码
 - hw: 存放Homework文件
 - lab: 存放Lab文件
 - disc: 存放讨论章节的文件
