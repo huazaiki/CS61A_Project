@@ -106,6 +106,60 @@ def fizzbuzz(n):
         count += 1
 
 
+def f(x):
+    return x
+def g(x, y):
+    if x(y):
+        return not y
+    return y
+
+
+def ordered_digits(x):
+    """
+    >>> ordered_digits(5)
+    True
+    >>> ordered_digits(11)
+    True
+    >>> ordered_digits(127)
+    True
+    >>> ordered_digits(1357)
+    True
+    >>> ordered_digits(21)
+    False
+    >>> result = ordered_digits(1375) # Return, don't print
+    >>> result
+    False
+    """
+
+    digits = [int(digit) for digit in str(x)]
+    return all(digits[i] <= digits[i + 1] for i in range(len(digits) - 1))
+
+
+def rect(area, perimeter):
+    """Return the longest side of a rectangle with area and perimeter that has integer sides.
+    >>> rect(10, 14) # A 2 x 5 rectangle
+    5
+    >>> rect(5, 12) # A 1 x 5 rectangle
+    5
+    >>> rect(25, 20) # A 5 x 5 rectangle
+    5
+    >>> rect(25, 25) # A 2.5 x 10 rectangle doesn't count because sides are not integers
+    False
+    >>> rect(25, 29) # A 2 x 12.5 rectangle doesn't count because sides are not integers
+    False
+    >>> rect(100, 50) # A 5 x 20 rectangle
+    20
+    """
+    side = 1
+    while side * side <= area:
+        other = round((perimeter - 2 * side) / 2)
+        if side * other == area:
+            return max(side, other)
+        side = side + 1
+    return False
+
+
+
 if __name__ == '__main__':
 
     # print(False or 0)
@@ -114,7 +168,13 @@ if __name__ == '__main__':
     # print(case_in_point())
     # square(so_slow(5))
     # print(is_prime(7))
-    fizzbuzz(16)
+    # fizzbuzz(16)
     # file = open('E:/application/PyCharm Community Edition 2023.3.2/plugins/python-ce/helpers/pycharm/docrunner.py', 'r')
     # text = file.read()
     # print(text)
+    # print(not 3)
+    # x = 3
+    # x = g(f, x)
+    # f = g(f, 0)
+    # print(f)
+    print(rect(10, 14))
