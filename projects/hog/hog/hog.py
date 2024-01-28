@@ -114,13 +114,9 @@ def more_boar(player_score, opponent_score):
     num2 = final_num(opponent_score)
 
     num1_prefix = num1 // 10
-    print("DEBUG: num1_prefix = ", num1_prefix)
     num1_suffix = num1 % 10
-    print("DEBUG: num1_suffix = ", num1_suffix)
     num2_prefix = num2 // 10
-    print("DEBUG: num2_prefix = ", num2_prefix)
     num2_suffix = num2 % 10
-    print("DEBUG: num2_suffix = ", num2_suffix)
 
     return num1_prefix < num2_prefix and num1_suffix < num2_suffix
     # END PROBLEM 4
@@ -179,10 +175,11 @@ def play(strategy0, strategy1, score0=0, score1=0, dice=six_sided,
             score1 += take_turn(strategy1(score1, score0), score0, dice, goal)
             if not more_boar(score1, score0):
                 who = next_player(who)
+        # both(say_scores, announce_lead_changes)
     # END PROBLEM 5
     # (note that the indentation for the problem 6 prompt (***YOUR CODE HERE***) might be misleading)
     # BEGIN PROBLEM 6
-    "*** YOUR CODE HERE ***"
+        say = say(score0, score1)
     # END PROBLEM 6
     return score0, score1
 
@@ -271,6 +268,20 @@ def announce_highest(who, last_score=0, running_high=0):
     assert who == 0 or who == 1, 'The who argument should indicate a player.'
     # BEGIN PROBLEM 7
     "*** YOUR CODE HERE ***"
+    def say(score0, score1):
+        # if who == 0:
+        #     score = score0
+        # else:
+        #     score = score1
+        score = score0 if who == 0 else score1
+        running_h = running_high
+        if score > last_score:
+            running = score - last_score
+            if running > running_h:
+                running_h = running
+                print("Player", who, "has reached a new maximum point gain.", score - last_score, "point(s)!")
+        return announce_highest(who, last_score=score, running_high=running_h)
+    return say
     # END PROBLEM 7
 
 
