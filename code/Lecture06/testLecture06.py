@@ -98,7 +98,10 @@ def sum_squares(N):
         return N ** 2 + sum_squares(N - 1)
 
 
-
+def f(n):
+    def ff():
+        return n
+    return ff
 
 if __name__ == '__main__':
     # print(sum_digits(99999))
@@ -116,4 +119,4 @@ if __name__ == '__main__':
     # print(curry2(add)(30)(12))
     # print(curry2(add)(30))  # Prints a function value
     # print(curry2(add))  # Prints the function value!
-    print(sum_squares(2))
+    print(f(5)())

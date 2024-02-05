@@ -1,4 +1,4 @@
-hello, zyx
+from random import randint
 
-hello, dqh
-
+if __name__ == '__main__':
+    print(print(1), print(2))
