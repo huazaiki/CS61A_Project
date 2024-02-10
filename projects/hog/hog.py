@@ -22,6 +22,17 @@ def roll_dice(num_rolls, dice=six_sided):
     assert num_rolls > 0, 'Must roll at least once.'
     # BEGIN PROBLEM 1
     "*** YOUR CODE HERE ***"
+    k = 1
+    score = 0
+    flag = False
+    while k <= num_rolls:
+        a = dice()
+        if a == 1:
+            flag = True
+        score += a
+        k += 1
+    return 1 if flag == True else score
+
     # END PROBLEM 1
 
 
@@ -30,8 +41,17 @@ def piggy_points(score):
 
     score:  The opponent's current score.
     """
+    assert type(score) is int
     # BEGIN PROBLEM 2
     "*** YOUR CODE HERE ***"
+    score = score ** 2
+    minimum = 10
+    while score > 0:
+        last = score % 10
+        if last < minimum:
+            minimum = last
+        score //= 10
+    return 3 if minimum == 10 else 3 + minimum
     # END PROBLEM 2
 
 
