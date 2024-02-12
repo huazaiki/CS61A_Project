@@ -164,16 +164,20 @@ def play(strategy0, strategy1, score0=0, score1=0, dice=six_sided,
         if who == 0:
             score0 += take_turn(strategy0(score0, score1), score1, dice, goal)
             if more_boar(score0, score1):
+                say = say(score0, score1)
                 continue
         else:
             score1 += take_turn(strategy1(score1, score0), score0, dice, goal)
             if more_boar(score1, score0):
+                say = say(score1, score0)
                 continue  
-        who = next_player(who)  
+        who = next_player(who)
+        
     # END PROBLEM 5
     # (note that the indentation for the problem 6 prompt (***YOUR CODE HERE***) might be misleading)
     # BEGIN PROBLEM 6
-    "*** YOUR CODE HERE ***"
+        "*** YOUR CODE HERE ***"
+        say = say(score0, score1)
     # END PROBLEM 6
     return score0, score1
 
@@ -258,6 +262,18 @@ def announce_highest(who, last_score=0, running_high=0):
     assert who == 0 or who == 1, 'The who argument should indicate a player.'
     # BEGIN PROBLEM 7
     "*** YOUR CODE HERE ***"
+    def f(score0, score1):
+        highest = running_high
+        last = last_score
+        score = score0 if who == 0 else score1  # 选择分数
+        s = score - last    # 当前回合和上一回合的分数差
+        if s > highest: # 如果获得历史最高分
+            print("Player", who, "has reached a new maximum point gain.", s, "point(s)!")
+            highest = s # 更新历史最高分
+        last = score    # 更新上一回合分数
+        return announce_highest(who, last_score=last, running_high=highest)
+    return f
+
     # END PROBLEM 7
 
 
