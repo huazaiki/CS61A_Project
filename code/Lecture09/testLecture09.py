@@ -1,3 +1,14 @@
+def trace1(f):
+    """Return a function that takes a single argument, x, prints it,
+    computes and prints F(x), and returns the computed value."""
+    def traced(x):
+        print("->", x)
+        r = f(x)
+        print("<-", r)
+        return r
+    return traced
+
+@trace1
 def reverse_digits(n):
     """Assuming N >= 0 is an integer.  Return the number whose
     base-10 representation is the reverse of that of N.
@@ -49,8 +60,3 @@ def interleave(a, b):
     if a <= 9:
         return a * 10 + b
     return interleave(a % 10, b % 10) + interleave(a // 10, b // 10) * 10 ** 2
-
-
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
