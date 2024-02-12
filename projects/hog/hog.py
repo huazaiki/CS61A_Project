@@ -314,6 +314,14 @@ def make_averaged(original_function, trials_count=1000):
     """
     # BEGIN PROBLEM 8
     "*** YOUR CODE HERE ***"
+    def func(*args):
+        k = trials_count
+        sum = 0
+        while k > 0:
+            sum += original_function(*args)
+            k -= 1 
+        return sum / trials_count
+    return func
     # END PROBLEM 8
 
 
@@ -328,6 +336,16 @@ def max_scoring_num_rolls(dice=six_sided, trials_count=1000):
     """
     # BEGIN PROBLEM 9
     "*** YOUR CODE HERE ***"
+    k = 1
+    highest = 0
+    result = 0
+    while k <= 10:
+        tmp = make_averaged(roll_dice, trials_count)(k, dice)
+        if tmp > highest:
+            result = k
+            highest = tmp
+        k += 1
+    return result
     # END PROBLEM 9
 
 
@@ -368,7 +386,9 @@ def piggypoints_strategy(score, opponent_score, cutoff=8, num_rolls=6):
     rolls NUM_ROLLS otherwise.
     """
     # BEGIN PROBLEM 10
-    return 6  # Replace this statement
+    if piggy_points(opponent_score) >= cutoff:
+        return 0
+    return num_rolls
     # END PROBLEM 10
 
 
@@ -378,7 +398,8 @@ def more_boar_strategy(score, opponent_score, cutoff=8, num_rolls=6):
     Otherwise, it rolls NUM_ROLLS.
     """
     # BEGIN PROBLEM 11
-    return 6  # Replace this statement
+    return 0 if more_boar(score + piggy_points(opponent_score), opponent_score) \
+        else piggypoints_strategy(score, opponent_score, cutoff, num_rolls)
     # END PROBLEM 11
 
 
@@ -388,7 +409,12 @@ def final_strategy(score, opponent_score):
     *** YOUR DESCRIPTION HERE ***
     """
     # BEGIN PROBLEM 12
-    return 6  # Replace this statement
+    if score < 82:
+        return more_boar_strategy(score, opponent_score)
+    elif score < 90 and score > opponent_score:
+        return piggypoints_strategy(score, opponent_score, cutoff=7, num_rolls=1)
+    return 2
+
     # END PROBLEM 12
 
 ##########################
