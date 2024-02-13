@@ -21,6 +21,8 @@ def summation(n, term):
     assert n >= 1
     "*** YOUR CODE HERE ***"
 
+    return term(1) if n == 1 else term(n) + summation(n - 1, term)
+
 
 def pascal(row, column):
     """Returns the value of the item in Pascal's Triangle 
@@ -35,6 +37,11 @@ def pascal(row, column):
     6
     """
     "*** YOUR CODE HERE ***"
+    if column == 0 or row == column:
+        return 1
+    elif row < column:
+        return 0
+    return pascal(row - 1, column - 1) + pascal(row - 1, column)
 
 
 def compose1(f, g):
@@ -66,3 +73,6 @@ def repeated(f, n):
     True
     """
     "*** YOUR CODE HERE ***"
+    if n == 0:
+        return lambda x: x
+    return compose1(f, repeated(f, n - 1))
