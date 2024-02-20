@@ -172,3 +172,4 @@ def max_path_sum(t):
 if __name__ == '__main__':
     t = tree(1, [tree(5, [tree(1), tree(3)]), tree(10)])
     print(max_path_sum(t))
+    
