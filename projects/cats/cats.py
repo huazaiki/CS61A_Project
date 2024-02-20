@@ -29,9 +29,11 @@ def choose(paragraphs, select, k):
     >>> choose(ps, s, 2)
     ''
     """
-    # BEGIN PROBLEM 1
-    "*** YOUR CODE HERE ***"
-    # END PROBLEM 1
+    res = [word for word in paragraphs if select(word)]
+    if k > len(res) - 1:
+        return ''
+    else:
+        return res[k]
 
 
 def about(topic):
@@ -48,9 +50,11 @@ def about(topic):
     'Nice pup.'
     """
     assert all([lower(x) == x for x in topic]), 'topics should be lowercase.'
-    # BEGIN PROBLEM 2
-    "*** YOUR CODE HERE ***"
-    # END PROBLEM 2
+
+    def process(sentence):
+        return True in [word in topic for word in split(lower(remove_punctuation(sentence)))]
+
+    return process
 
 
 def accuracy(typed, reference):
@@ -78,9 +82,17 @@ def accuracy(typed, reference):
     """
     typed_words = split(typed)
     reference_words = split(reference)
-    # BEGIN PROBLEM 3
-    "*** YOUR CODE HERE ***"
-    # END PROBLEM 3
+
+    typed_len = len(typed_words)
+    reference_len = len(reference_words)
+
+    if typed_len == 0:
+        if reference_len == 0:
+            return 100.0
+        return 0.0
+    count = sum([1 for i in range(min(reference_len, typed_len)) if typed_words[i] == reference_words[i]]) 
+    return count / typed_len * 100
+
 
 
 def wpm(typed, elapsed):
@@ -96,9 +108,8 @@ def wpm(typed, elapsed):
     2.0
     """
     assert elapsed > 0, 'Elapsed time must be positive'
-    # BEGIN PROBLEM 4
-    "*** YOUR CODE HERE ***"
-    # END PROBLEM 4
+
+    return len(typed) / 5 * 60 / elapsed
 
 
 ###########
@@ -123,9 +134,31 @@ def autocorrect(typed_word, valid_words, diff_function, limit):
     >>> autocorrect("tosting", ["testing", "asking", "fasting"], first_diff, 10)
     'testing'
     """
-    # BEGIN PROBLEM 5
-    "*** YOUR CODE HERE ***"
-    # END PROBLEM 5
+    # minimum = float('inf')
+    # min_word = ''
+    # if typed_word in valid_words:
+    #     return typed_word
+    # for v in valid_words:
+    #     tmp = diff_function(typed_word, v, limit)
+    #     if tmp < minimum:
+    #         minimum = tmp
+    #         min_word = v
+    # if minimum <= limit:
+    #     return min_word
+    # else:
+    #     return typed_word
+    diff_list = []
+    for v in valid_words:
+        diff_list += [diff_function(typed_word, v, limit)]
+
+    if typed_word in valid_words or min(diff_list) > limit:
+        return typed_word
+    
+    def getMinimumWord(word):
+        return diff_function(typed_word, word, limit)
+    return min(valid_words, key=getMinimumWord)    
+
+
 
 
 def sphinx_switches(start, goal, limit):
@@ -150,9 +183,23 @@ def sphinx_switches(start, goal, limit):
     >>> sphinx_switches("rose", "hello", big_limit)   # Substitute: r->h, o->e, s->l, e->l, length difference of 1.
     5
     """
-    # BEGIN PROBLEM 6
-    assert False, 'Remove this line'
-    # END PROBLEM 6
+    def func(w1, w2, ans):
+        if ans > limit:
+            return limit + 1
+        if len(w1) == 0:
+            return ans + len(w2)
+        if len(w2) == 0:
+            return ans + len(w1)
+        if w1[0] == w2[0]:
+            return func(w1[1:], w2[1:], ans)
+        else:
+            return func(w1[1:], w2[1:], ans + 1)
+
+    if start[0] == goal[0]:
+        return func(start[1:], goal[1:], 0)
+    else:
+        return func(start[1:], goal[1:], 1)
+    
 
 
 def pawssible_patches(start, goal, limit):
@@ -172,25 +219,24 @@ def pawssible_patches(start, goal, limit):
     >>> pawssible_patches("ckiteus", "kittens", big_limit) # ckiteus -> kiteus -> kitteus -> kittens
     3
     """
-    assert False, 'Remove this line'
 
-    if ______________:  # Fill in the condition
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        # END
+    if limit < 0:
+        return 0
+    
+    if not start and not goal:
+        return 0
 
-    elif ___________:  # Feel free to remove or add additional cases
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        # END
-
+    if not start or not goal:
+        return abs(len(start) - len(goal))
+    
+    if start[0] == goal[0]:
+        return pawssible_patches(start[1:], goal[1:], limit)
     else:
-        add = ...  # Fill in these lines
-        remove = ...
-        substitute = ...
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        # END
+        add = pawssible_patches(start, goal[1:], limit - 1)
+        remove = pawssible_patches(start[1:], goal, limit - 1)
+        substitute = pawssible_patches(start[1:], goal[1:], limit - 1)
+        
+        return min(add, remove, substitute) + 1
 
 
 def final_diff(start, goal, limit):
@@ -230,9 +276,20 @@ def report_progress(typed, prompt, user_id, send):
     ID: 3 Progress: 0.2
     0.2
     """
-    # BEGIN PROBLEM 8
-    "*** YOUR CODE HERE ***"
-    # END PROBLEM 8
+    count = 0
+
+    for i in range(len(typed)):
+        if typed[i] != prompt[i]:
+            break
+        count += 1
+
+    correct_rate = count / len(prompt)
+
+    send_data = dict([('id', user_id), ('progress', correct_rate)])
+    send(send_data)
+
+    return correct_rate
+
 
 
 def fastest_words_report(times_per_player, words):
@@ -263,9 +320,13 @@ def time_per_word(times_per_player, words):
     >>> all_times(game)
     [[6, 3, 6, 2], [10, 6, 1, 2]]
     """
-    # BEGIN PROBLEM 9
-    "*** YOUR CODE HERE ***"
-    # END PROBLEM 9
+    time = [] 
+
+    for times in times_per_player:
+        time.append([abs(times[i + 1] - times[i]) for i in range(len(times) - 1)])
+
+    return game(words, time)
+        
 
 
 def fastest_words(game):
@@ -281,9 +342,22 @@ def fastest_words(game):
     """
     player_indices = range(len(all_times(game)))  # contains an *index* for each player
     word_indices = range(len(all_words(game)))    # contains an *index* for each word
-    # BEGIN PROBLEM 10
-    "*** YOUR CODE HERE ***"
-    # END PROBLEM 10
+
+    compare = []
+    res = [[] for i in player_indices]
+
+    for w_index in word_indices:
+
+        for p_index in player_indices:
+            compare.append(time(game, p_index, w_index))
+            print("DEBUG: compare = ", compare)
+
+        index = compare.index(min(compare))     # 
+        res[index].append(word_at(game, w_index))
+        compare = []
+
+    return res
+    
 
 
 def game(words, times):
