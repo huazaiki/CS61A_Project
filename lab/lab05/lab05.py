@@ -11,7 +11,8 @@ def couple(s, t):
     [['c', 's'], [6, '1']]
     """
     assert len(s) == len(t)
-    "*** YOUR CODE HERE ***"
+    
+    return [[s[i], t[i]] for i in range(len(s))]
 
 
 from math import sqrt
@@ -28,7 +29,11 @@ def distance(city_a, city_b):
     >>> distance(city_c, city_d)
     5.0
     """
-    "*** YOUR CODE HERE ***"
+
+    diff_of_two_lon = get_lon(city_a) - get_lon(city_b)
+    diff_of_two_lat = get_lat(city_a) - get_lat(city_b)
+
+    return sqrt(diff_of_two_lon ** 2 + diff_of_two_lat ** 2)
 
 
 def closer_city(lat, lon, city_a, city_b):
@@ -46,7 +51,13 @@ def closer_city(lat, lon, city_a, city_b):
     >>> closer_city(41.29, 174.78, bucharest, vienna)
     'Bucharest'
     """
-    "*** YOUR CODE HERE ***"
+    
+    tmp_city = make_city('', lat, lon)
+    
+    if distance(tmp_city, city_a) <= distance(tmp_city, city_b):
+        return get_name(city_a)
+    else:
+        return get_name(city_b)
 
 
 def check_city_abstraction():
@@ -151,7 +162,13 @@ def berry_finder(t):
     >>> berry_finder(t)
     True
     """
-    "*** YOUR CODE HERE ***"
+    
+    if is_leaf(t):
+        return label(t) == 'berry'
+    
+    tmp = [berry_finder(b) for b in branches(t)]
+    tmp.append(label(t) == 'berry')
+    return True in tmp
 
 
 def sprout_leaves(t, leaves):
@@ -187,7 +204,10 @@ def sprout_leaves(t, leaves):
           1
           2
     """
-    "*** YOUR CODE HERE ***"
+    
+    if is_leaf(t):
+        return tree(label(t), [tree(l) for l in leaves])
+    return tree(label(t), [sprout_leaves(b, leaves) for b in branches(t)])
 
 # Abstraction tests for sprout_leaves and berry_finder
 
@@ -247,8 +267,8 @@ def coords(fn, seq, lower, upper):
     >>> coords(fn, seq, 1, 9)
     [[-2, 4], [1, 1], [3, 9]]
     """
-    "*** YOUR CODE HERE ***"
-    return ______
+    
+    return [[n, fn(n)] for n in seq if lower <= fn(n) <= upper]
 
 
 def riffle(deck):
@@ -260,8 +280,8 @@ def riffle(deck):
     >>> riffle(range(20))
     [0, 10, 1, 11, 2, 12, 3, 13, 4, 14, 5, 15, 6, 16, 7, 17, 8, 18, 9, 19]
     """
-    "*** YOUR CODE HERE ***"
-    return _______
+    
+    return [deck[i + int(len(deck) / 2 * (j % 2))] for i in range(int(len(deck) / 2)) for j in range(2)]
 
 
 def add_trees(t1, t2):
@@ -299,7 +319,21 @@ def add_trees(t1, t2):
         5
       5
     """
-    "*** YOUR CODE HERE ***"
+    
+    res_label = label(t1) + label(t2)
+    res_branches = []
+
+    i = 0
+    while i < len(branches(t1)) and i < len(branches(t2)):
+        b1, b2 = branches(t1)[i], branches(t2)[i]
+        new_branches = add_trees(b1, b2)
+        res_branches += [new_branches]
+        i += 1
+
+    res_branches += branches(t1)[i:]
+    res_branches += branches(t2)[i:]
+
+    return tree(res_label, res_branches)
 
 
 def build_successors_table(tokens):
@@ -320,8 +354,10 @@ def build_successors_table(tokens):
     prev = '.'
     for word in tokens:
         if prev not in table:
-            "*** YOUR CODE HERE ***"
-        "*** YOUR CODE HERE ***"
+            table[prev] = [word]
+            prev = word
+            continue
+        table[prev].append(word)
         prev = word
     return table
 
@@ -339,11 +375,12 @@ def construct_sent(word, table):
     import random
     result = ''
     while word not in ['.', '!', '?']:
-        "*** YOUR CODE HERE ***"
+        result += word + ' '
+        word = random.choice(table[word])
     return result.strip() + word
 
 
-def shakespeare_tokens(path='shakespeare.txt', url='http://composingprograms.com/shakespeare.txt'):
+def shakespeare_tokens(path='shakespeare.txt', url='http://www.composingprograms.com/shakespeare.txt'):
     """Return the words of Shakespeare's plays as a list."""
     import os
     from urllib.request import urlopen
@@ -354,8 +391,8 @@ def shakespeare_tokens(path='shakespeare.txt', url='http://composingprograms.com
         return shakespeare.read().decode(encoding='ascii').split()
 
 # Uncomment the following two lines
-# tokens = shakespeare_tokens()
-# table = build_successors_table(tokens)
+tokens = shakespeare_tokens()
+table = build_successors_table(tokens)
 
 
 def random_sent():
