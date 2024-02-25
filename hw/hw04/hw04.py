@@ -51,13 +51,14 @@ def end(s):
 def planet(size):
     """Construct a planet of some size."""
     assert size > 0
-    "*** YOUR CODE HERE ***"
+    return ['planet', size]
+    
 
 
 def size(w):
     """Select the size of a planet."""
     assert is_planet(w), 'must call size on a planet'
-    "*** YOUR CODE HERE ***"
+    return w[1]
 
 
 def is_planet(w):
@@ -117,7 +118,11 @@ def balanced(m):
     >>> check(HW_SOURCE_FILE, 'balanced', ['Index'])
     True
     """
-    "*** YOUR CODE HERE ***"
+    if is_planet(m):
+        return True
+    return total_weight(end(left(m))) * length(left(m)) == \
+            total_weight(end(right(m))) * length(right(m)) and \
+            balanced(end(left(m))) and balanced(end(right(m)))
 
 
 def totals_tree(m):
@@ -149,8 +154,11 @@ def totals_tree(m):
     >>> check(HW_SOURCE_FILE, 'totals_tree', ['Index'])
     True
     """
-    "*** YOUR CODE HERE ***"
-
+    
+    if is_planet(m):
+        return tree(total_weight(m))
+    return tree(total_weight(m), [totals_tree(end(left(m))), totals_tree(end(right(m)))])
+        
 
 def replace_thor_at_leaf(t, thors_replacement):
     """Returns a new tree where every leaf value equal to "thor" has
@@ -181,7 +189,10 @@ def replace_thor_at_leaf(t, thors_replacement):
     >>> laerad == yggdrasil # Make sure original tree is unmodified
     True
     """
-    "*** YOUR CODE HERE ***"
+    if is_leaf(t):
+        if label(t) == 'thor':
+            return tree(thors_replacement)
+    return tree(label(t), [replace_thor_at_leaf(b, thors_replacement) for b in branches(t)]) 
 
 
 def has_path(t, word):
@@ -215,7 +226,14 @@ def has_path(t, word):
     False
     """
     assert len(word) > 0, 'no path for empty word.'
-    "*** YOUR CODE HERE ***"
+    
+    if len(word) == 1:
+        return label(t) == word[0]
+
+    elif label(t) == word[0]:
+        return True in [has_path(b, word[1:]) for b in branches(t)]
+    
+    return False
 
 
 def preorder(t):
@@ -228,8 +246,11 @@ def preorder(t):
     >>> preorder(tree(2, [tree(4, [tree(6)])]))
     [2, 4, 6]
     """
-    "*** YOUR CODE HERE ***"
-
+    res = []
+    res.append(label(t))
+    for i in range(len(branches(t))):
+        res.extend(preorder(branches(t)[i]))
+    return res
 
 def interval(a, b):
     """Construct an interval from a to b."""
