@@ -7,7 +7,9 @@ def convert_link(link):
     >>> convert_link(Link.empty)
     []
     """
-    "*** YOUR CODE HERE ***"
+    if link == Link.empty:
+        return list(Link.empty)
+    return [link.first] + convert_link(link.rest)
 
 
 def cumulative_mul(t):
@@ -19,7 +21,13 @@ def cumulative_mul(t):
     >>> t
     Tree(105, [Tree(15, [Tree(5)]), Tree(7)])
     """
-    "*** YOUR CODE HERE ***"
+    if not t.is_leaf():
+        for b in t.branches:
+            cumulative_mul(b)
+            t.label *= b.label
+        
+    
+        
 
 
 def has_cycle(link):
